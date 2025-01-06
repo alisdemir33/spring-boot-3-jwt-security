@@ -17,8 +17,13 @@ import static com.alibou.security.user.Role.MANAGER;
 public class SecurityApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SecurityApplication.class, args);
-	}
+
+        try {
+            SpringApplication.run(SecurityApplication.class, args);
+        } catch (Exception e) {
+			e.printStackTrace();
+        }
+    }
 
 	@Bean
 	public CommandLineRunner commandLineRunner(
@@ -29,7 +34,7 @@ public class SecurityApplication {
 					.firstname("Admin")
 					.lastname("Admin")
 					.email("admin@mail.com")
-					.password("password")
+					.password("123")
 					.role(ADMIN)
 					.build();
 			System.out.println("Admin token: " + service.register(admin).getAccessToken());
@@ -38,7 +43,7 @@ public class SecurityApplication {
 					.firstname("Admin")
 					.lastname("Admin")
 					.email("manager@mail.com")
-					.password("password")
+					.password("123")
 					.role(MANAGER)
 					.build();
 			System.out.println("Manager token: " + service.register(manager).getAccessToken());
