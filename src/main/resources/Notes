@@ -1,0 +1,12 @@
+--authenticate
+{
+    "email": "admin@mail.com",
+    "password": "123"
+}
+//register
+{
+    "email": "alidemir4@gmail.com",
+    "password": "password1232",
+    "firstName": "John5",
+    "lastName": "Doe"
+}
