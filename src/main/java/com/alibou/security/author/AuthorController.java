@@ -3,11 +3,7 @@ package com.alibou.security.author;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,5 +23,11 @@ public class AuthorController {
     @GetMapping
     public ResponseEntity<List<Author>> findAllAuthors() {
         return ResponseEntity.ok(service.findAll());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody AuthorRequest request) {
+        service.update(id, request);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,8 +1,6 @@
 package com.alibou.security.models;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +25,14 @@ public class BaseEntity {
   private String createdBy;
   private String lastModifiedBy;
 
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+  }
 
+  @PreUpdate
+  protected void onUpdate() {
+    lastModifiedAt = LocalDateTime.now();
+  }
 
 }

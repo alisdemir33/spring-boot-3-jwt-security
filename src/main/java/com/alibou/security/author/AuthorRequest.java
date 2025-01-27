@@ -9,4 +9,5 @@ public class AuthorRequest {
     private String firstName;
     private String lastName;
     private String email;
+    private Integer age;
 }
