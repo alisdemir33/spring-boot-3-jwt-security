@@ -25,7 +25,7 @@ public class SecurityApplication {
         }
     }
 
-	//@Bean
+	@Bean
 	public CommandLineRunner commandLineRunner(
 			AuthenticationService service
 	) {
