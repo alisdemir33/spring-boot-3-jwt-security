@@ -26,7 +26,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody AuthorRequest request) {
+    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody AuthorRequest request) {
         service.update(id, request);
         return ResponseEntity.ok().build();
     }

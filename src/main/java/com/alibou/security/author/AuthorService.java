@@ -28,7 +28,7 @@ public class AuthorService {
         repository.save(author);
     }
 
-    public void update(Long id, AuthorRequest request) {
+    public void update(Integer id, AuthorRequest request) {
         Optional<Author> optionalAuthor = repository.findById(id);
         if (optionalAuthor.isPresent()) {
             Author author = optionalAuthor.get();
