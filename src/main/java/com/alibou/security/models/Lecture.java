@@ -1,5 +1,6 @@
 package com.alibou.security.models;
 
+import com.alibou.security.section.Section;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

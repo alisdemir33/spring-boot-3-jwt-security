@@ -1,7 +1,7 @@
 package com.alibou.security.author;
 
 import com.alibou.security.models.BaseEntity;
-import com.alibou.security.models.Course;
+import com.alibou.security.course.Course;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
