@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/course")
@@ -14,24 +15,36 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-   // @PreAuthorize("hasAuthority('admin:create')")
     @PostMapping
-    public Course createCourse(@RequestBody Course course) {
+    public Course createCourse(@RequestBody CourseRequest courseRequest) {
+        Course course = new Course();
+        course.setTitle(courseRequest.getTitle());
+        course.setDescription(courseRequest.getDescription());
 
-        courseService.createCourseTest();
+        List<Section> sections = courseRequest.getSections().stream().map(sectionRequest -> {
+            Section section = new Section();
+            section.setName(sectionRequest.getName());
+            section.setSectionOrder(sectionRequest.getSectionOrder());
+            return section;
+        }).collect(Collectors.toList());
 
-        return courseService.createCourse(course);
+        return courseService.createCourse(course, courseRequest.getAuthorIds(), sections);
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
-    @PostMapping("/{courseId}/sections")
-    public Section addSectionToCourse(@PathVariable Integer courseId, @RequestBody Section section) {
-        return courseService.addSectionToCourse(courseId, section);
+    @GetMapping
+    public String getAllCourses() {
+        return "GET:: All courses";
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
-    @GetMapping("/{courseId}/sections")
-    public List<Section> getCourseSections(@PathVariable Integer courseId) {
-        return courseService.getCourseSections(courseId);
-    }
+
+//    @PostMapping("/{courseId}/sections")
+//    public Section addSectionToCourse(@PathVariable Integer courseId, @RequestBody Section section) {
+//        return courseService.addSectionToCourse(courseId, section);
+//    }
+//
+//
+//    @GetMapping("/{courseId}/sections")
+//    public List<Section> getCourseSections(@PathVariable Integer courseId) {
+//        return courseService.getCourseSections(courseId);
+//    }
 }

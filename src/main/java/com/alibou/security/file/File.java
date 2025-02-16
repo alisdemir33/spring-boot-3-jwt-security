@@ -1,5 +1,6 @@
-package com.alibou.security.models;
+package com.alibou.security.file;
 
+import com.alibou.security.resource.Resource;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,8 +14,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-// @DiscriminatorValue("T")
-public class Text extends Resource {
+// @DiscriminatorValue("F")
+public class File extends Resource {
 
-  private String content;
+  private String type;
+
 }

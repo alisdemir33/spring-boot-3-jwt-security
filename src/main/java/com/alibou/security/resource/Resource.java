@@ -1,5 +1,6 @@
-package com.alibou.security.models;
+package com.alibou.security.resource;
 
+import com.alibou.security.lecture.Lecture;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

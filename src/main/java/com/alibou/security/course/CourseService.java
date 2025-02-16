@@ -1,24 +1,43 @@
 package com.alibou.security.course;
 
+import com.alibou.security.author.Author;
+import com.alibou.security.author.AuthorRepository;
 import com.alibou.security.section.Section;
 import com.alibou.security.section.SectionRepository;
 import com.alibou.security.section.SectionService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class CourseService {
 
-    @Autowired
-    private CourseRepository courseRepository;
 
-    @Autowired
-    private SectionRepository sectionRepository;
+    private final CourseRepository courseRepository;
+    private final SectionRepository sectionRepository;
+    private final AuthorRepository authorRepository;
 
-    public Course createCourse(Course course) {
-        return courseRepository.save(course);
+    private final SectionService sectionService;
+
+    @Transactional
+    public Course createCourse(Course course, List<Integer> authorIds, List<Section> sections) {
+        List<Author> authors = authorRepository.findAllById(authorIds).stream().collect(Collectors.toList());
+        course.setAuthors(authors);
+        Course savedCourse = courseRepository.save(course);
+
+        for (Section section : sections) {
+            section.setCourse(savedCourse);
+            sectionRepository.save(section);
+        }
+
+        return savedCourse;
     }
 
     public Section addSectionToCourse(Integer courseId, Section section) {
@@ -32,18 +51,17 @@ public class CourseService {
         return course.getSections();
     }
 
-    public void createCourseTest() {
-        CourseService courseService = new CourseService();
+    /*public void createCourseTest() {
 
         Course course1 = new Course();
         course1.setTitle("Course 1");
-        courseService.createCourse(course1);
+        createCourse(course1);
 
         Course course2 = new Course();
         course2.setTitle("Course 2");
-        courseService.createCourse(course2);
+        createCourse(course2);
 
-        SectionService sectionService = new SectionService();
+      // SectionService sectionService = new SectionService();
 
         Section section1 = new Section();
         section1.setName("Section 1.1");
@@ -75,6 +93,6 @@ public class CourseService {
        // section6.setContent("Content for Section 2.3");
         sectionService.addSectionToCourse(course2.getId(), section6);
         //return courseRepository.save(course);
-    }
+    }*/
 
 }

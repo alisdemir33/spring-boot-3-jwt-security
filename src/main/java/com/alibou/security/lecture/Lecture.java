@@ -1,5 +1,7 @@
-package com.alibou.security.models;
+package com.alibou.security.lecture;
 
+import com.alibou.security.models.BaseEntity;
+import com.alibou.security.resource.Resource;
 import com.alibou.security.section.Section;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

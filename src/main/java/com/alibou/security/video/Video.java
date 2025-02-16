@@ -1,5 +1,6 @@
-package com.alibou.security.models;
+package com.alibou.security.video;
 
+import com.alibou.security.resource.Resource;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,6 @@
-package com.alibou.security.repositories;
+package com.alibou.security.lecture;
 
 
-import com.alibou.security.models.Lecture;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LectureRepository extends JpaRepository<Lecture, Integer> {
