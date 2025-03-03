@@ -18,6 +18,25 @@ public class SectionService {
 
     private final CourseRepository courseRepository;
 
+    public Section getSectionById(Integer id) {
+        return sectionRepository.findById(id).orElseThrow(() -> new RuntimeException("Section not found"));
+    }
+
+    public List<Section> getAllSections() {
+        return sectionRepository.findAll();
+    }
+
+    public Section updateSection(Integer id, SectionRequest sectionRequest) {
+        Section section = getSectionById(id);
+        section.setName(sectionRequest.getName());
+        section.setDescription(sectionRequest.getDescription());
+        return sectionRepository.save(section);
+    }
+
+    public void deleteSection(Integer id) {
+        sectionRepository.deleteById(id);
+    }
+
     public Section createSection(Section section) {
         return sectionRepository.save(section);
     }

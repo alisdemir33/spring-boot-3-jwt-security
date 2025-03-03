@@ -1,6 +1,16 @@
 jwt tokenda belli bir bilgiyi tutup okumak
-coklu tabloya veri okumak ve yazmak
 
-admin ve manager yetkileri test edildi.
+Sistemde admin author ve user yetkileri bulunacaktır.
+admin tüm sistemde tüm yetkilere sahip olacaktır.
+Sistemde author yetkisine sahip olan kullanıcılar sadece kendi kurs ve kitaplarını görebilecek ve düzenleyebileceklerdir.
+user sistemde kayıtlı kursları ve kitapları görebilecektir.
+user kendisi ile almak istediği kurs ve kitapları seçip ilişkilendirebilecektir.
+user kendi ilişkilendirdiği kurs ve kitapları ilişki durumunu değiştirebilecektir.
+Author yeni course ve bağlı lecture  lar gibi entitiler ekleyebilecektir.
+Eklediği entitiler kendisi ile otomatik olarak ilişkilendirilecektir.
+Admin de author gibi course lecture ekleyebilecektir.
+Admin eklediği course ve lecture ları istediği author ile ilişkilendirecektir.
+User sadece course ve book seçebilecektir. Course entitisine lecture ekleyemeyecektir.
+
 
 

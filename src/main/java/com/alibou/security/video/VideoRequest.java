@@ -1,18 +1,15 @@
-package com.alibou.security.file;
+package com.alibou.security.video;
 
 import com.alibou.security.resource.ResourceRequest;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
-public class FileRequest extends ResourceRequest {
-    private String type;
+public class VideoRequest extends ResourceRequest {
+    private int length;
 }

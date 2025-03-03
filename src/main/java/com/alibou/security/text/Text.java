@@ -18,4 +18,5 @@ import lombok.experimental.SuperBuilder;
 public class Text extends Resource {
 
   private String content;
+
 }

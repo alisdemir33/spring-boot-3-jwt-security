@@ -20,6 +20,7 @@ public class FileService {
                 .url(fileRequest.getUrl())
                 .size(fileRequest.getSize())
                 .lecture(Lecture.builder().id(fileRequest.getLectureId()).build())
+                .description(fileRequest.getDescription()) // Add this line
                 .build();
         return fileRepository.save(file);
 
@@ -36,7 +37,12 @@ public class FileService {
 
     public File updateFile(Integer id, FileRequest fileRequest) {
         File file = getFileById(id);
+        file.setName(fileRequest.getName());
+        file.setUrl(fileRequest.getUrl());
+        file.setSize(fileRequest.getSize());
         file.setType(fileRequest.getType());
+        file.setLecture(Lecture.builder().id(fileRequest.getLectureId()).build());
+        file.setDescription(fileRequest.getDescription()); // Add this line
         return fileRepository.save(file);
     }
 

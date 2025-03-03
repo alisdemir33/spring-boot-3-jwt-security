@@ -3,6 +3,8 @@ package com.alibou.security.section;
 import com.alibou.security.course.Course;
 import com.alibou.security.models.BaseEntity;
 import com.alibou.security.lecture.Lecture;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,6 +26,8 @@ import java.util.List;
 public class Section extends BaseEntity {
 
   private String name;
+
+  private String description;
 
   private int sectionOrder;
 

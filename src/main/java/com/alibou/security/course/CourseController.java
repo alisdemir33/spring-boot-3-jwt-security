@@ -1,7 +1,10 @@
 package com.alibou.security.course;
 
+import com.alibou.security.book.Book;
 import com.alibou.security.section.Section;
+import com.alibou.security.section.SectionDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +38,25 @@ public class CourseController {
     public String getAllCourses() {
         return "GET:: All courses";
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CourseDto>  getCourse(@PathVariable Integer id) {
+        Course course = courseService.getCourseById(id);
+        CourseDto courseDto = new CourseDto();
+        courseDto.setId(course.getId());
+        courseDto.setTitle(course.getTitle());
+        courseDto.setDescription(course.getDescription());
+        courseDto.setSections(course.getSections().stream().map(section -> {
+            SectionDto sectionDto = new SectionDto();
+            sectionDto.setId(section.getId());
+            sectionDto.setName(section.getName());
+            sectionDto.setSectionOrder(section.getSectionOrder());
+            return sectionDto;
+        }).collect(Collectors.toList()));
+
+        return  ResponseEntity.ok(courseDto);
+    }
+
 
 
 //    @PostMapping("/{courseId}/sections")

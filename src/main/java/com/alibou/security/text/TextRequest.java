@@ -1,4 +1,4 @@
-package com.alibou.security.file;
+package com.alibou.security.text;
 
 import com.alibou.security.resource.ResourceRequest;
 import lombok.AllArgsConstructor;
@@ -7,12 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @Getter
 @Setter
 @SuperBuilder
 @AllArgsConstructor
-public class FileRequest extends ResourceRequest {
-    private String type;
+public class TextRequest extends ResourceRequest {
+    private String content;
 }

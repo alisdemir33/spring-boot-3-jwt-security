@@ -1,4 +1,4 @@
-package com.alibou.security.author;
+package com.alibou.security.author.dto;
 
 import lombok.Builder;
 import lombok.Data;

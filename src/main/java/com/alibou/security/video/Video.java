@@ -18,7 +18,7 @@ import org.hibernate.annotations.PolymorphismType;
 @Entity
 // @PrimaryKeyJoinColumn(name = "video_id")
 // @DiscriminatorValue("V")
-@Polymorphism(type = PolymorphismType.EXPLICIT)
+//@Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Video extends Resource {
 
   private int length;

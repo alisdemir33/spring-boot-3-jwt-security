@@ -2,6 +2,7 @@ package com.alibou.security.book;
 
 import com.alibou.security.author.Author;
 import com.alibou.security.author.AuthorRepository;
+import com.alibou.security.section.SectionDto;
 import com.alibou.security.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,14 @@ public class BookService {
         return repository.findAll();
     }
 
-    public Book findById(Integer id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+    public BookDto findById(Integer id) {
+       var book = repository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+       return new BookDto(
+           book.getId(),
+           book.getTitle(),
+           book.getAuthors().stream().map(Author::getFirstName).collect(Collectors.joining(", ")),
+           book.getIsbn()
+       );
     }
 
     public void update(Integer id, BookRequest request) {

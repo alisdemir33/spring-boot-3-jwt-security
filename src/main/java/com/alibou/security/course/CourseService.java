@@ -51,6 +51,10 @@ public class CourseService {
         return course.getSections();
     }
 
+    public Course getCourseById(int i) {
+        return courseRepository.findById(i).orElseThrow(() -> new RuntimeException("Course not found"));
+    }
+
     /*public void createCourseTest() {
 
         Course course1 = new Course();
