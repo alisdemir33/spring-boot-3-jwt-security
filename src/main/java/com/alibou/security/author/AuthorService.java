@@ -4,7 +4,7 @@ package com.alibou.security.author;
 import com.alibou.security.author.dto.AuthorDto;
 import com.alibou.security.author.dto.AuthorRequest;
 import com.alibou.security.author.dto.AuthorSearchFormDto;
-import com.alibou.security.course.CourseDto;
+import com.alibou.security.course.dto.CourseDto;
 import com.alibou.security.session.SessionService;
 import com.alibou.security.utils.QueryUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,8 +27,9 @@ public class AuthorService {
 
     private final SessionService sessionService;
 
-    public Optional<Author> findById(Integer id) {
-        return repository.findById(id);
+    public Optional<AuthorDto> findById(Integer id) {
+        Optional<Author> author = repository.findById(id);
+        return author.map(this::convertToDto);
     }
 
     public AuthorDto save(AuthorRequest request) {
@@ -65,7 +66,9 @@ public class AuthorService {
         List<CourseDto> courses = author.getCourses() != null ? author.getCourses().stream().map(course -> new CourseDto(
                 course.getId(),
                 course.getTitle(),
-                course.getDescription()
+                course.getDescription(),
+                null,
+                null
         )).collect(Collectors.toList()) : Collections.emptyList();
 
         return new AuthorDto(

@@ -1,13 +1,12 @@
 package com.alibou.security.author.dto;
 
-import com.alibou.security.course.CourseDto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.alibou.security.course.dto.CourseDto;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthorDto {

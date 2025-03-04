@@ -1,4 +1,4 @@
-package com.alibou.security.course;
+package com.alibou.security.course.dto;
 
 import com.alibou.security.section.SectionRequest;
 import lombok.Data;

@@ -2,17 +2,21 @@ package com.alibou.security.course;
 
 import com.alibou.security.author.Author;
 import com.alibou.security.author.AuthorRepository;
+import com.alibou.security.course.dto.CourseDto;
+import com.alibou.security.course.dto.CourseRequest;
+import com.alibou.security.course.dto.CourseSearchFormDto;
 import com.alibou.security.section.Section;
+import com.alibou.security.section.SectionDto;
 import com.alibou.security.section.SectionRepository;
 import com.alibou.security.section.SectionService;
+import com.alibou.security.utils.QueryUtils;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +29,29 @@ public class CourseService {
     private final AuthorRepository authorRepository;
 
     private final SectionService sectionService;
+
+
+
+    public List<CourseDto> findCoursesByCriteria(CourseSearchFormDto searchDto) {
+        var pageable = QueryUtils.getPageable(searchDto, "id");
+
+        Specification<Course> spec = Specification.where(CourseSpecification.hasTitle(searchDto.getTitle()))
+                .and(CourseSpecification.hasDescription(searchDto.getDescription()));
+
+        Page<Course> page = courseRepository.findAll(spec, pageable);
+
+        return page.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public CourseDto save(CourseRequest request) {
+        Course course = new Course();
+        course.setTitle(request.getTitle());
+        course.setDescription(request.getDescription());
+        Course savedCourse = courseRepository.save(course);
+        return convertToDto(savedCourse);
+    }
 
     @Transactional
     public Course createCourse(Course course, List<Integer> authorIds, List<Section> sections) {
@@ -40,6 +67,68 @@ public class CourseService {
         return savedCourse;
     }
 
+    @Transactional
+    public CourseDto createCourse(CourseRequest courseRequest) {
+        Course course = new Course();
+        course.setTitle(courseRequest.getTitle());
+        course.setDescription(courseRequest.getDescription());
+
+        List<Section> sections = courseRequest.getSections().stream().map(sectionRequest -> {
+            Section section = new Section();
+            section.setName(sectionRequest.getName());
+            section.setSectionOrder(sectionRequest.getSectionOrder());
+            return section;
+        }).collect(Collectors.toList());
+
+        List<Author> authors = authorRepository.findAllById(courseRequest.getAuthorIds()).stream().collect(Collectors.toList());
+        course.setAuthors(authors);
+        Course savedCourse = courseRepository.save(course);
+
+        for (Section section : sections) {
+            section.setCourse(savedCourse);
+            sectionRepository.save(section);
+        }
+       // Course savedCourse = createCourse(course, courseRequest.getAuthorIds(), sections);
+        return convertToDto(savedCourse);
+    }
+
+
+
+    public CourseDto convertToDto(Course course) {
+        CourseDto courseDto = new CourseDto();
+        courseDto.setId(course.getId());
+        courseDto.setTitle(course.getTitle());
+        courseDto.setDescription(course.getDescription());
+        courseDto.setSections(course.getSections().stream().map(section -> {
+            SectionDto sectionDto = new SectionDto();
+            sectionDto.setId(section.getId());
+            sectionDto.setName(section.getName());
+            sectionDto.setSectionOrder(section.getSectionOrder());
+            return sectionDto;
+        }).collect(Collectors.toList()));
+        return courseDto;
+    }
+
+    public CourseDto getCourseById(Integer id) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        return convertToDto(course);
+    }
+
+    @Transactional
+    public CourseDto updateCourse(Integer id, CourseRequest request) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        course.setTitle(request.getTitle());
+        course.setDescription(request.getDescription());
+        Course updatedCourse = courseRepository.save(course);
+        return convertToDto(updatedCourse);
+    }
+
+    @Transactional
+    public void deleteCourse(Integer id) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        courseRepository.delete(course);
+    }
+
     public Section addSectionToCourse(Integer courseId, Section section) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
         section.setCourse(course);
@@ -51,8 +140,8 @@ public class CourseService {
         return course.getSections();
     }
 
-    public Course getCourseById(int i) {
-        return courseRepository.findById(i).orElseThrow(() -> new RuntimeException("Course not found"));
+    public List<CourseDto> getAllCourses() {
+        return courseRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     /*public void createCourseTest() {
