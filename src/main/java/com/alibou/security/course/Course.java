@@ -40,7 +40,7 @@ public class Course extends BaseEntity {
   private List<Author> authors;
 
 
-  @OneToMany(mappedBy = "course")
+  @OneToMany(mappedBy = "course",fetch = FetchType.LAZY)
   private List<Section> sections;
 
 }

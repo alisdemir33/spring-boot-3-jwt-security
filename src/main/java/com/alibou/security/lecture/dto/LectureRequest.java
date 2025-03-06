@@ -1,4 +1,4 @@
-package com.alibou.security.lecture;
+package com.alibou.security.lecture.dto;
 
 import lombok.Data;
 

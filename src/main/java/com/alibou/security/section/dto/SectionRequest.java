@@ -1,4 +1,4 @@
-package com.alibou.security.section;
+package com.alibou.security.section.dto;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package com.alibou.security.course.dto;
 
-import com.alibou.security.section.SectionRequest;
+import com.alibou.security.section.dto.SectionRequest;
 import lombok.Data;
 
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.alibou.security.lecture;
 
+import com.alibou.security.lecture.dto.LectureRequest;
 import com.alibou.security.resource.Resource;
 import com.alibou.security.resource.ResourceRepository;
 import lombok.RequiredArgsConstructor;

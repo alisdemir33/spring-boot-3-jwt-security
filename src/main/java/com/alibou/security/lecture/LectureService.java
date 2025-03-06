@@ -1,8 +1,9 @@
 package com.alibou.security.lecture;
 
+import com.alibou.security.lecture.dto.LectureRequest;
 import com.alibou.security.resource.Resource;
 import com.alibou.security.resource.ResourceRepository;
-import com.alibou.security.section.SectionRepository;
+import com.alibou.security.section.util.SectionRepository;
 import com.alibou.security.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

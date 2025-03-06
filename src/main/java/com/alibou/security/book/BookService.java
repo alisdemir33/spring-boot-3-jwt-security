@@ -2,7 +2,6 @@ package com.alibou.security.book;
 
 import com.alibou.security.author.Author;
 import com.alibou.security.author.AuthorRepository;
-import com.alibou.security.section.SectionDto;
 import com.alibou.security.session.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

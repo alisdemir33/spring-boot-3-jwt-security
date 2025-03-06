@@ -6,8 +6,8 @@ import com.alibou.security.course.dto.CourseDto;
 import com.alibou.security.course.dto.CourseRequest;
 import com.alibou.security.course.dto.CourseSearchFormDto;
 import com.alibou.security.section.Section;
-import com.alibou.security.section.SectionDto;
-import com.alibou.security.section.SectionRepository;
+import com.alibou.security.section.dto.SectionDto;
+import com.alibou.security.section.util.SectionRepository;
 import com.alibou.security.section.SectionService;
 import com.alibou.security.utils.QueryUtils;
 import lombok.AllArgsConstructor;
@@ -27,10 +27,6 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
     private final AuthorRepository authorRepository;
-
-    private final SectionService sectionService;
-
-
 
     public List<CourseDto> findCoursesByCriteria(CourseSearchFormDto searchDto) {
         var pageable = QueryUtils.getPageable(searchDto, "id");
@@ -85,7 +81,7 @@ public class CourseService {
         Course savedCourse = courseRepository.save(course);
 
         for (Section section : sections) {
-            section.setCourse(savedCourse);
+//            section.setCourse(savedCourse);
             sectionRepository.save(section);
         }
        // Course savedCourse = createCourse(course, courseRequest.getAuthorIds(), sections);
@@ -95,18 +91,21 @@ public class CourseService {
 
 
     public CourseDto convertToDto(Course course) {
-        CourseDto courseDto = new CourseDto();
-        courseDto.setId(course.getId());
-        courseDto.setTitle(course.getTitle());
-        courseDto.setDescription(course.getDescription());
-        courseDto.setSections(course.getSections().stream().map(section -> {
-            SectionDto sectionDto = new SectionDto();
-            sectionDto.setId(section.getId());
-            sectionDto.setName(section.getName());
-            sectionDto.setSectionOrder(section.getSectionOrder());
-            return sectionDto;
-        }).collect(Collectors.toList()));
-        return courseDto;
+        if (course == null) {
+            return null;
+        }
+        return CourseDto.builder()
+                .id(course.getId())
+                .title(course.getTitle())
+                .description(course.getDescription())
+                .sections(course.getSections().stream()
+                        .map(section -> SectionDto.builder()
+                                .id(section.getId())
+                                .name(section.getName())
+                                .sectionOrder(section.getSectionOrder())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     public CourseDto getCourseById(Integer id) {
@@ -131,7 +130,7 @@ public class CourseService {
 
     public Section addSectionToCourse(Integer courseId, Section section) {
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
-        section.setCourse(course);
+       // section.setCourse(course);
         return sectionRepository.save(section);
     }
 

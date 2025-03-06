@@ -1,5 +1,9 @@
 package com.alibou.security.section;
 
+import com.alibou.security.common.ResultDto;
+import com.alibou.security.section.dto.SectionDto;
+import com.alibou.security.section.dto.SectionRequest;
+import com.alibou.security.section.dto.SectionSearchFormDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,21 +17,9 @@ public class SectionController {
 
     private final SectionService sectionService;
 
-    @PostMapping
-    public ResponseEntity<Section> createSection(@RequestBody SectionRequest sectionRequest) {
-       Section section = Section.builder()
-    .name(sectionRequest.getName())
-    .description(sectionRequest.getDescription())
-    .sectionOrder(sectionRequest.getSectionOrder())
-    .build();
-        section = sectionService.addSectionToCourse(sectionRequest.getCourseId(), section);
-       // Section createdSection = sectionService.createSection(section);
-        return ResponseEntity.ok(section);
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<Section> getSectionById(@PathVariable Integer id) {
-        Section section = sectionService.getSectionById(id);
+    public ResponseEntity<SectionDto> getSectionById(@PathVariable Integer id) {
+        SectionDto section = sectionService.getSectionById(id);
         return ResponseEntity.ok(section);
     }
 
@@ -37,9 +29,22 @@ public class SectionController {
         return ResponseEntity.ok(sections);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ResultDto<SectionDto>> searchSections(SectionSearchFormDto searchForm) {
+        List<SectionDto> lst = sectionService.searchSections(searchForm);
+        return ResponseEntity.ok(new ResultDto<>((long) lst.size(), lst));
+    }
+
+
+    @PostMapping
+    public ResponseEntity<Section> createSection(@RequestBody SectionRequest sectionRequest) {
+        Section section = sectionService.createSection(sectionRequest);
+        return ResponseEntity.ok(section);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Section> updateSection(@PathVariable Integer id, @RequestBody SectionRequest sectionRequest) {
-        Section updatedSection = sectionService.updateSection(id, sectionRequest);
+    public ResponseEntity<SectionDto> updateSection(@PathVariable Integer id, @RequestBody SectionRequest sectionRequest) {
+        SectionDto updatedSection = sectionService.updateSection(id, sectionRequest);
         return ResponseEntity.ok(updatedSection);
     }
 

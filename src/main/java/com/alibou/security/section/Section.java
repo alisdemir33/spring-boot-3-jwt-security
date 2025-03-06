@@ -5,10 +5,7 @@ import com.alibou.security.models.BaseEntity;
 import com.alibou.security.lecture.Lecture;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,9 +28,11 @@ public class Section extends BaseEntity {
 
   private int sectionOrder;
 
-  @ManyToOne
+  @JsonIgnore
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "course_id")
   private Course course;
+
 
   @OneToMany(mappedBy = "section")
   private List<Lecture> lectures;
