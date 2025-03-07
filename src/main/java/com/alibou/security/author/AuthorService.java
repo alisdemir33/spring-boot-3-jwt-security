@@ -4,6 +4,10 @@ package com.alibou.security.author;
 import com.alibou.security.author.dto.AuthorDto;
 import com.alibou.security.author.dto.AuthorRequest;
 import com.alibou.security.author.dto.AuthorSearchFormDto;
+import com.alibou.security.author.dto.BaseAuthorDto;
+import com.alibou.security.author.util.AuthorMapper;
+import com.alibou.security.author.util.AuthorRepository;
+import com.alibou.security.author.util.AuthorSpecification;
 import com.alibou.security.course.dto.CourseDto;
 import com.alibou.security.session.SessionService;
 import com.alibou.security.utils.QueryUtils;
@@ -27,12 +31,14 @@ public class AuthorService {
 
     private final SessionService sessionService;
 
-    public Optional<AuthorDto> findById(Integer id) {
+    public Optional<BaseAuthorDto> findById(Integer id) {
         Optional<Author> author = repository.findById(id);
-        return author.map(this::convertToDto);
+       // return author.map(this::convertToDto);
+        return author.map(AuthorMapper.INSTANCE::toBaseAuthorDto);
+
     }
 
-    public AuthorDto save(AuthorRequest request) {
+    public BaseAuthorDto save(AuthorRequest request) {
         Author author = Author.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -45,7 +51,7 @@ public class AuthorService {
         return convertToDto(savedAuthor);
     }
 
-    public AuthorDto update(Integer id, AuthorRequest request) {
+    public BaseAuthorDto update(Integer id, AuthorRequest request) {
         Optional<Author> optionalAuthor = repository.findById(id);
         if (optionalAuthor.isPresent()) {
             Author author = optionalAuthor.get();
@@ -62,7 +68,7 @@ public class AuthorService {
         }
     }
 
-    private AuthorDto convertToDto(Author author) {
+    private BaseAuthorDto convertToDto(Author author) {
         List<CourseDto> courses = author.getCourses() != null ? author.getCourses().stream().map(course -> new CourseDto(
                 course.getId(),
                 course.getTitle(),
@@ -71,14 +77,15 @@ public class AuthorService {
                 null
         )).collect(Collectors.toList()) : Collections.emptyList();
 
-        return new AuthorDto(
-                author.getId(),
-                author.getFirstName(),
-                author.getLastName(),
-                author.getEmail(),
-                author.getAge(),
-                courses
-        );
+        return AuthorMapper.INSTANCE.toBaseAuthorDto(author);
+//        return new AuthorDto(
+//                author.getId(),
+//                author.getFirstName(),
+//                author.getLastName(),
+//                author.getEmail(),
+//                author.getAge()
+//                //courses
+//        );
     }
 
 
@@ -114,7 +121,7 @@ public class AuthorService {
     }
 
 
-    public List<AuthorDto> findAuthorsByCriteria(AuthorSearchFormDto searchDto) {
+    public List<BaseAuthorDto> findAuthorsByCriteria(AuthorSearchFormDto searchDto) {
         var pageable = QueryUtils.getPageable(searchDto, "id");
 
         Specification<Author> spec = Specification.where(AuthorSpecification.hasAgeEqualTo(searchDto.getAge()))
@@ -124,7 +131,7 @@ public class AuthorService {
 
         Page<Author> page = repository.findAll(spec, pageable);
 
-        List<AuthorDto> authorDtos = page.stream()
+        List<BaseAuthorDto> authorDtos = page.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
 

@@ -1,14 +1,15 @@
 package com.alibou.security.course;
 
 import com.alibou.security.author.Author;
-import com.alibou.security.author.AuthorRepository;
+import com.alibou.security.author.util.AuthorRepository;
 import com.alibou.security.course.dto.CourseDto;
 import com.alibou.security.course.dto.CourseRequest;
 import com.alibou.security.course.dto.CourseSearchFormDto;
+import com.alibou.security.course.util.CourseRepository;
+import com.alibou.security.course.util.CourseSpecification;
 import com.alibou.security.section.Section;
 import com.alibou.security.section.dto.SectionDto;
 import com.alibou.security.section.util.SectionRepository;
-import com.alibou.security.section.SectionService;
 import com.alibou.security.utils.QueryUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

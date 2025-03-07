@@ -1,5 +1,6 @@
 package com.alibou.security.lecture.dto;
 
+    import com.alibou.security.section.dto.BaseSectionDto;
     import com.alibou.security.section.dto.SectionDto;
 
     import lombok.AllArgsConstructor;
@@ -15,6 +16,6 @@ package com.alibou.security.lecture.dto;
         private Integer id;
         private String name;
         private String description;
-        private SectionDto section;
+        private BaseSectionDto section;
     }
 

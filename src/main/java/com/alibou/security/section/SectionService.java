@@ -1,10 +1,12 @@
 package com.alibou.security.section;
 
 import com.alibou.security.course.Course;
-import com.alibou.security.course.CourseRepository;
+import com.alibou.security.course.util.CourseRepository;
 import com.alibou.security.course.CourseService;
 import com.alibou.security.exception.EntityNotFoundException;
+import com.alibou.security.section.dto.BaseSectionDto;
 import com.alibou.security.section.util.SectionMapper;
+import com.alibou.security.section.util.SectionMapper_manual;
 import com.alibou.security.section.dto.SectionDto;
 import com.alibou.security.section.dto.SectionRequest;
 import com.alibou.security.section.dto.SectionSearchFormDto;
@@ -17,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,14 +28,50 @@ public class SectionService {
 
     private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
-    private final SectionMapper sectionMapper;
+    // private final SectionMapper_manual sectionMapper;
     private final CourseService courseService;
+    private final SectionMapper sectionMapper = SectionMapper.INSTANCE;
 
-    public SectionDto getSectionById(Integer id) {
-        return sectionRepository.findById(id)
-                .map(section -> sectionMapper.convertToDto(section, courseService.convertToDto(section.getCourse())))
+
+    //    public SectionDto getSectionById(Integer id) {
+//        return sectionRepository.findById(id)
+//                .map(section -> sectionMapper.convertToDto(section, courseService.convertToDto(section.getCourse())))
+//                .orElseThrow(() -> new EntityNotFoundException("Section not found"));
+//    }
+
+
+
+
+    public BaseSectionDto getSectionById(Integer id) {
+        Optional<Section> section = sectionRepository.findById(id);
+             return   section.map(sectionMapper::toBaseSectionDto)
                 .orElseThrow(() -> new EntityNotFoundException("Section not found"));
     }
+
+    public BaseSectionDto getBasicSectionInfo(Integer id) {
+        return sectionMapper.toBaseSectionDto(
+                sectionRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Section not found"))
+        );
+    }
+
+    public BaseSectionDto getSectionWithFirstLevel(Integer id) {
+        return sectionMapper.toBaseSectionDto(
+                sectionRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Section not found"))
+        );
+    }
+
+    // Manual control for deeper relationships
+    public BaseSectionDto getSectionWithFullDetails(Integer id) {
+        Section section = sectionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Section not found"));
+
+        BaseSectionDto dto = sectionMapper.toBaseSectionDto(section);
+        // Manually load additional levels if needed
+        return dto;
+    }
+
 
     public List<Section> getAllSections() {
         return sectionRepository.findAll();
@@ -47,13 +86,13 @@ public class SectionService {
         return addSectionToCourse(sectionRequest.getCourseId(), section);
     }
 
-    public SectionDto updateSection(Integer id, SectionRequest sectionRequest) {
+    public BaseSectionDto updateSection(Integer id, SectionRequest sectionRequest) {
         Section section = sectionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Section not found"));
         section.setName(sectionRequest.getName());
         section.setDescription(sectionRequest.getDescription());
         Section result = sectionRepository.save(section);
-        return sectionMapper.convertToDto(result, courseService.convertToDto(result.getCourse()));
+        return sectionMapper.toBaseSectionDto(result);
     }
 
     public void deleteSection(Integer id) {
@@ -77,7 +116,7 @@ public class SectionService {
         return course.getSections();
     }
 
-    public List<SectionDto> searchSections(SectionSearchFormDto searchForm) {
+    public List<BaseSectionDto> searchSections(SectionSearchFormDto searchForm) {
         var pageable = QueryUtils.getPageable(searchForm, "id");
 
         Specification<Section> spec = Specification.where(SectionSpecification.hasName(searchForm.getName()))
@@ -85,8 +124,11 @@ public class SectionService {
 
         Page<Section> page = sectionRepository.findAll(spec, pageable);
 
+//        return page.stream()
+//                .map(section -> sectionMapper.convertToDto(section, courseService.convertToDto(section.getCourse())))
+//                .collect(Collectors.toList());
         return page.stream()
-                .map(section -> sectionMapper.convertToDto(section, courseService.convertToDto(section.getCourse())))
+                .map(sectionMapper::toBaseSectionDto)
                 .collect(Collectors.toList());
     }
 }

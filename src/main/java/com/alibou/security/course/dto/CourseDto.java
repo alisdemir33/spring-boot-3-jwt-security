@@ -13,13 +13,11 @@
     @NoArgsConstructor
     @AllArgsConstructor
     @SuperBuilder
-    public class CourseDto {
-        private Integer id;
-        private String title;
-        private String description;
+    public class CourseDto extends BaseCourseDto {
         private List<AuthorDto> authors;
         private List<SectionDto> sections;
 
-
+        public CourseDto(Integer id, String title, String description, Object o, Object o1) {
+        }
     }
 

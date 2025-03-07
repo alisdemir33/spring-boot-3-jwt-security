@@ -1,5 +1,6 @@
 package com.alibou.security.lecture;
 
+import com.alibou.security.lecture.dto.LectureDto;
 import com.alibou.security.lecture.dto.LectureRequest;
 import com.alibou.security.resource.Resource;
 import com.alibou.security.resource.ResourceRepository;
@@ -24,8 +25,8 @@ public class LectureController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lecture> getLectureById(@PathVariable Integer id) {
-        Lecture lecture = lectureService.getLectureById(id);
+    public ResponseEntity<LectureDto> getLectureById(@PathVariable Integer id) {
+        LectureDto lecture = lectureService.getLectureById(id);
         return ResponseEntity.ok(lecture);
     }
 
@@ -36,8 +37,8 @@ public class LectureController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Lecture> updateLecture(@PathVariable Integer id, @RequestBody LectureRequest lectureRequest) {
-        Lecture updatedLecture = lectureService.updateLecture(id, lectureRequest);
+    public ResponseEntity<LectureDto> updateLecture(@PathVariable Integer id, @RequestBody LectureRequest lectureRequest) {
+        LectureDto updatedLecture = lectureService.updateLecture(id, lectureRequest);
         return ResponseEntity.ok(updatedLecture);
     }
 
@@ -48,9 +49,9 @@ public class LectureController {
     }
 
     @PostMapping("/{lectureId}/resources")
-    public ResponseEntity<Lecture> associateResource(@PathVariable Integer lectureId, @RequestBody Resource resource) {
+    public ResponseEntity<LectureDto> associateResource(@PathVariable Integer lectureId, @RequestBody Resource resource) {
         Resource savedResource = resourceRepository.save(resource);
-        Lecture updatedLecture = lectureService.associateResource(lectureId, savedResource);
+        LectureDto updatedLecture = lectureService.associateResource(lectureId, savedResource);
         return ResponseEntity.ok(updatedLecture);
     }
 }

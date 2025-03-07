@@ -1,5 +1,6 @@
-package com.alibou.security.lecture;
+package com.alibou.security.lecture.util;
 
+import com.alibou.security.lecture.Lecture;
 import org.springframework.data.jpa.domain.Specification;
 
 public class LectureSpecification {

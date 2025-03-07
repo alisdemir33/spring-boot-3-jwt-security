@@ -1,6 +1,6 @@
-package com.alibou.security.course;
+package com.alibou.security.course.util;
 
-import com.alibou.security.author.Author;
+import com.alibou.security.course.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

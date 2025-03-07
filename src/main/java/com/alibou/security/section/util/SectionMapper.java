@@ -1,41 +1,22 @@
 package com.alibou.security.section.util;
 
-import com.alibou.security.lecture.Lecture;
-import com.alibou.security.lecture.dto.LectureDto;
+
 import com.alibou.security.section.Section;
+import com.alibou.security.section.dto.BaseSectionDto;
 import com.alibou.security.section.dto.SectionDto;
-import com.alibou.security.course.dto.CourseDto;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-import java.util.stream.Collectors;
+@Mapper(componentModel = "spring")
+public interface SectionMapper {
+    SectionMapper INSTANCE = Mappers.getMapper(SectionMapper.class);
 
-@Component
-public class SectionMapper {
+    // Base mapping without relationships
+    BaseSectionDto toBaseSectionDto(Section section);
 
-    public LectureDto convertToLectureDto(Lecture lecture) {
-        if (lecture == null) {
-            return null;
-        }
-        return LectureDto.builder()
-                .id(lecture.getId())
-                .name(lecture.getName())
-                .description(lecture.getDescription())
-                .build();
-    }
-
-    public SectionDto convertToDto(Section section, CourseDto courseDto) {
-        if (section == null) {
-            return null;
-        }
-        return SectionDto.builder()
-                .id(section.getId())
-                .name(section.getName())
-                .description(section.getDescription())
-                .sectionOrder(section.getSectionOrder())
-                .course(courseDto)
-                .lectures(section.getLectures().stream()
-                        .map(this::convertToLectureDto)
-                        .collect(Collectors.toList()))
-                .build();
-    }
+    // First level relationship only
+//    @Mapping(target = "course", expression = "java(courseMapper.toBaseCourseDto(section.getCourse()))")
+//    @Mapping(target = "lectures", expression = "java(section.getLectures().stream().map(lectureMapper::toBaseLectureDto).collect(Collectors.toList()))")
+//    SectionDto toSectionDto(Section section);
 }

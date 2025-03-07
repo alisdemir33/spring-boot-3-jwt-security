@@ -1,5 +1,6 @@
-package com.alibou.security.author;
+package com.alibou.security.author.util;
 
+import com.alibou.security.author.Author;
 import org.springframework.data.jpa.domain.Specification;
 
 public class AuthorSpecification {

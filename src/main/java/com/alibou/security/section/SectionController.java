@@ -1,6 +1,7 @@
 package com.alibou.security.section;
 
 import com.alibou.security.common.ResultDto;
+import com.alibou.security.section.dto.BaseSectionDto;
 import com.alibou.security.section.dto.SectionDto;
 import com.alibou.security.section.dto.SectionRequest;
 import com.alibou.security.section.dto.SectionSearchFormDto;
@@ -18,9 +19,9 @@ public class SectionController {
     private final SectionService sectionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<SectionDto> getSectionById(@PathVariable Integer id) {
-        SectionDto section = sectionService.getSectionById(id);
-        return ResponseEntity.ok(section);
+    public ResponseEntity<BaseSectionDto> getSectionById(@PathVariable Integer id) {
+        BaseSectionDto sectionDto = sectionService.getSectionById(id);
+        return ResponseEntity.ok(sectionDto);
     }
 
     @GetMapping
@@ -30,8 +31,8 @@ public class SectionController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResultDto<SectionDto>> searchSections(SectionSearchFormDto searchForm) {
-        List<SectionDto> lst = sectionService.searchSections(searchForm);
+    public ResponseEntity<ResultDto<BaseSectionDto>> searchSections(SectionSearchFormDto searchForm) {
+        List<BaseSectionDto> lst = sectionService.searchSections(searchForm);
         return ResponseEntity.ok(new ResultDto<>((long) lst.size(), lst));
     }
 
@@ -43,8 +44,8 @@ public class SectionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SectionDto> updateSection(@PathVariable Integer id, @RequestBody SectionRequest sectionRequest) {
-        SectionDto updatedSection = sectionService.updateSection(id, sectionRequest);
+    public ResponseEntity<BaseSectionDto> updateSection(@PathVariable Integer id, @RequestBody SectionRequest sectionRequest) {
+        BaseSectionDto updatedSection = sectionService.updateSection(id, sectionRequest);
         return ResponseEntity.ok(updatedSection);
     }
 

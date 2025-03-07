@@ -9,11 +9,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthorDto {
-    private Integer id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private int age;
-    private List<CourseDto> courses;
+public class AuthorDto extends BaseAuthorDto {
+       private List<CourseDto> courses;
     }

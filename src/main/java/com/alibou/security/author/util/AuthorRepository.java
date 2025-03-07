@@ -1,4 +1,4 @@
-package com.alibou.security.author;
+package com.alibou.security.author.util;
 
 
 import com.alibou.security.author.Author;

@@ -4,6 +4,7 @@ package com.alibou.security.author;
 import com.alibou.security.author.dto.AuthorDto;
 import com.alibou.security.author.dto.AuthorRequest;
 import com.alibou.security.author.dto.AuthorSearchFormDto;
+import com.alibou.security.author.dto.BaseAuthorDto;
 import com.alibou.security.common.ResultDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,8 @@ public class AuthorController {
     private final AuthorService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<AuthorDto> findAuthorById(@PathVariable Integer id) {
-        Optional<AuthorDto> author = service.findById(id);
+    public ResponseEntity<BaseAuthorDto> findAuthorById(@PathVariable Integer id) {
+        Optional<BaseAuthorDto> author = service.findById(id);
         return author.map(ResponseEntity::ok).
                 orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -35,20 +36,20 @@ public class AuthorController {
     }
 
     @PostMapping("/search")
-    public  ResponseEntity<ResultDto<AuthorDto>> searchAuthors(@RequestBody AuthorSearchFormDto searchDto) {
-        List<AuthorDto>  lst  = service.findAuthorsByCriteria(searchDto);
+    public  ResponseEntity<ResultDto<BaseAuthorDto>> searchAuthors(@RequestBody AuthorSearchFormDto searchDto) {
+        List<BaseAuthorDto>  lst  = service.findAuthorsByCriteria(searchDto);
         return ResponseEntity.ok(new ResultDto<>( (long)lst.size(), lst));
     }
 
     @PostMapping
-    public ResponseEntity<AuthorDto> save(@RequestBody AuthorRequest request) {
-        AuthorDto authorDto = service.save(request);
+    public ResponseEntity<BaseAuthorDto> save(@RequestBody AuthorRequest request) {
+        BaseAuthorDto authorDto = service.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(authorDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorDto> update(@PathVariable Integer id, @RequestBody AuthorRequest request) {
-        AuthorDto authorDto = service.update(id, request);
+    public ResponseEntity<BaseAuthorDto> update(@PathVariable Integer id, @RequestBody AuthorRequest request) {
+        BaseAuthorDto authorDto = service.update(id, request);
         return ResponseEntity.ok(authorDto);
     }
 
