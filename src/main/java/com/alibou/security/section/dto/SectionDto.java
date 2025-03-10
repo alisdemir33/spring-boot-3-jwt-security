@@ -1,4 +1,5 @@
 package com.alibou.security.section.dto;
+    import com.alibou.security.course.dto.BaseCourseDto;
     import com.alibou.security.course.dto.CourseDto;
     import com.alibou.security.lecture.Lecture;
     import com.alibou.security.lecture.dto.LectureDto;
@@ -13,7 +14,7 @@ package com.alibou.security.section.dto;
     @AllArgsConstructor
     @SuperBuilder
     public class SectionDto extends BaseSectionDto{
-         CourseDto course;
+         BaseCourseDto course;
          List<LectureDto> lectures;
     }
 

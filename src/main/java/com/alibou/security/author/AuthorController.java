@@ -30,15 +30,16 @@ public class AuthorController {
                 orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<AuthorDto>> findAllAuthors() {
         return ResponseEntity.ok(service.findAll());
     }
 
+
     @PostMapping("/search")
     public  ResponseEntity<ResultDto<BaseAuthorDto>> searchAuthors(@RequestBody AuthorSearchFormDto searchDto) {
-        List<BaseAuthorDto>  lst  = service.findAuthorsByCriteria(searchDto);
-        return ResponseEntity.ok(new ResultDto<>( (long)lst.size(), lst));
+        ResultDto<BaseAuthorDto>  lst  = service.findAuthorsByCriteria(searchDto);
+        return new ResponseEntity(lst,HttpStatus.OK);
     }
 
     @PostMapping

@@ -10,11 +10,15 @@ import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", uses = {LectureMapper.class,CourseMapper.class})
-public abstract class SectionMapper {
+public abstract class SectionMapperDetailed {
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "sectionOrder", source = "sectionOrder")
-    public abstract BaseSectionDto toBaseSectionDto(Section section);
+    @Autowired
+    protected CourseMapper courseMapper;
+
+    @Autowired
+    protected LectureMapper lectureMapper;
+
+    @Mapping(target = "course", expression = "java(courseMapper.toCourseDto(section.getCourse()))")
+    @Mapping(target = "lectures", expression = "java(section.getLectures().stream().map(lectureMapper::toLectureDto).collect(java.util.stream.Collectors.toList()))")
+    public abstract SectionDto toSectionDto(Section section);
 }

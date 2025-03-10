@@ -5,13 +5,10 @@ import com.alibou.security.course.util.CourseRepository;
 import com.alibou.security.course.CourseService;
 import com.alibou.security.exception.EntityNotFoundException;
 import com.alibou.security.section.dto.BaseSectionDto;
-import com.alibou.security.section.util.SectionMapper;
-import com.alibou.security.section.util.SectionMapper_manual;
+import com.alibou.security.section.util.*;
 import com.alibou.security.section.dto.SectionDto;
 import com.alibou.security.section.dto.SectionRequest;
 import com.alibou.security.section.dto.SectionSearchFormDto;
-import com.alibou.security.section.util.SectionRepository;
-import com.alibou.security.section.util.SectionSpecification;
 import com.alibou.security.utils.QueryUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,23 +27,22 @@ public class SectionService {
     private final CourseRepository courseRepository;
     // private final SectionMapper_manual sectionMapper;
     private final CourseService courseService;
-    private final SectionMapper sectionMapper = SectionMapper.INSTANCE;
+   // private final SectionMapper sectionMapper = SectionMapper.INSTANCE;
+    private    final    SectionMapper sectionMapper;
+    private    final SectionMapperDetailed sectionMapperDetailed;
 
-
-    //    public SectionDto getSectionById(Integer id) {
-//        return sectionRepository.findById(id)
-//                .map(section -> sectionMapper.convertToDto(section, courseService.convertToDto(section.getCourse())))
-//                .orElseThrow(() -> new EntityNotFoundException("Section not found"));
-//    }
-
-
-
-
-    public BaseSectionDto getSectionById(Integer id) {
-        Optional<Section> section = sectionRepository.findById(id);
-             return   section.map(sectionMapper::toBaseSectionDto)
+        public SectionDto getSectionById(Integer id) {
+        Optional<Section> section= sectionRepository.findById(id);
+         return  section.map(sect -> sectionMapperDetailed.toSectionDto(sect))
                 .orElseThrow(() -> new EntityNotFoundException("Section not found"));
     }
+
+
+//    public BaseSectionDto getSectionById(Integer id) {
+//        Optional<Section> section = sectionRepository.findById(id);
+//             return   section.map(sectionMapper::toBaseSectionDto)
+//                .orElseThrow(() -> new EntityNotFoundException("Section not found"));
+//    }
 
     public BaseSectionDto getBasicSectionInfo(Integer id) {
         return sectionMapper.toBaseSectionDto(
@@ -73,8 +69,10 @@ public class SectionService {
     }
 
 
-    public List<Section> getAllSections() {
-        return sectionRepository.findAll();
+    public List<BaseSectionDto> getAllSections() {
+        return sectionRepository.findAll().stream()
+                .map(sectionMapper::toBaseSectionDto)
+                .collect(Collectors.toList());
     }
 
     public Section createSection(SectionRequest sectionRequest) {

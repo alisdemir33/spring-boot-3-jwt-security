@@ -34,9 +34,10 @@ public class CourseController {
 
     @PostMapping("/search")
     public ResponseEntity<ResultDto<CourseDto>> searchCourses(@RequestBody CourseSearchFormDto searchDto) {
-        List<CourseDto> lst = courseService.findCoursesByCriteria(searchDto);
-        return ResponseEntity.ok(new ResultDto<>((long) lst.size(), lst));
+        ResultDto<CourseDto> result = courseService.findCoursesByCriteria(searchDto);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
 
     @PostMapping("/save")
     public ResponseEntity<CourseDto> save(@RequestBody CourseRequest request) {

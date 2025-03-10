@@ -1,17 +1,26 @@
 package com.alibou.security.course;
 
 import com.alibou.security.author.Author;
+import com.alibou.security.author.dto.BaseAuthorDto;
+import com.alibou.security.author.util.AuthorMapper;
 import com.alibou.security.author.util.AuthorRepository;
+import com.alibou.security.common.ResultDto;
+import com.alibou.security.course.dto.BaseCourseDto;
 import com.alibou.security.course.dto.CourseDto;
 import com.alibou.security.course.dto.CourseRequest;
 import com.alibou.security.course.dto.CourseSearchFormDto;
+import com.alibou.security.course.util.CourseMapper;
 import com.alibou.security.course.util.CourseRepository;
 import com.alibou.security.course.util.CourseSpecification;
 import com.alibou.security.section.Section;
+import com.alibou.security.section.dto.BaseSectionDto;
 import com.alibou.security.section.dto.SectionDto;
+import com.alibou.security.section.util.SectionMapper;
 import com.alibou.security.section.util.SectionRepository;
+import com.alibou.security.utils.ConvertUtils;
 import com.alibou.security.utils.QueryUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -28,8 +37,11 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
     private final AuthorRepository authorRepository;
+    private final CourseMapper courseMapper;
+    private final SectionMapper sectionMapper;
+    private final AuthorMapper authorMapper;
 
-    public List<CourseDto> findCoursesByCriteria(CourseSearchFormDto searchDto) {
+    public ResultDto<CourseDto> findCoursesByCriteria(CourseSearchFormDto searchDto) {
         var pageable = QueryUtils.getPageable(searchDto, "id");
 
         Specification<Course> spec = Specification.where(CourseSpecification.hasTitle(searchDto.getTitle()))
@@ -37,9 +49,17 @@ public class CourseService {
 
         Page<Course> page = courseRepository.findAll(spec, pageable);
 
-        return page.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        return ConvertUtils.sliceToResponseDtoFunction.apply(page.map(this::convertToDto));
+    }
+
+    public CourseDto getCourseById(Integer id) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
+        return convertToDto(course);
+
+    }
+
+    public List<CourseDto> getAllCourses() {
+        return courseRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     public CourseDto save(CourseRequest request) {
@@ -70,49 +90,26 @@ public class CourseService {
         course.setTitle(courseRequest.getTitle());
         course.setDescription(courseRequest.getDescription());
 
-        List<Section> sections = courseRequest.getSections().stream().map(sectionRequest -> {
+        List<Section> sections = courseRequest.getSections().stream().map(sectionDto -> {
             Section section = new Section();
-            section.setName(sectionRequest.getName());
-            section.setSectionOrder(sectionRequest.getSectionOrder());
+            section.setName(sectionDto.getName());
+            section.setSectionOrder(sectionDto.getSectionOrder());
             return section;
         }).collect(Collectors.toList());
 
         List<Author> authors = authorRepository.findAllById(courseRequest.getAuthorIds()).stream().collect(Collectors.toList());
         course.setAuthors(authors);
+
         Course savedCourse = courseRepository.save(course);
 
         for (Section section : sections) {
-//            section.setCourse(savedCourse);
+            section.setCourse(savedCourse);
             sectionRepository.save(section);
         }
        // Course savedCourse = createCourse(course, courseRequest.getAuthorIds(), sections);
         return convertToDto(savedCourse);
     }
 
-
-
-    public CourseDto convertToDto(Course course) {
-        if (course == null) {
-            return null;
-        }
-        return CourseDto.builder()
-                .id(course.getId())
-                .title(course.getTitle())
-                .description(course.getDescription())
-                .sections(course.getSections().stream()
-                        .map(section -> SectionDto.builder()
-                                .id(section.getId())
-                                .name(section.getName())
-                                .sectionOrder(section.getSectionOrder())
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    public CourseDto getCourseById(Integer id) {
-        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
-        return convertToDto(course);
-    }
 
     @Transactional
     public CourseDto updateCourse(Integer id, CourseRequest request) {
@@ -140,9 +137,45 @@ public class CourseService {
         return course.getSections();
     }
 
-    public List<CourseDto> getAllCourses() {
-        return courseRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+
+
+    public CourseDto convertToDto(Course course) {
+        CourseDto dto = courseMapper.toCourseDto(course);
+        dto.setSections(mapSections(course.getSections()));
+        dto.setAuthors(mapAuthors(course.getAuthors()));
+        return dto;
     }
+
+    public List<BaseSectionDto> mapSections(List<Section> sections) {
+        return sections.stream()
+                .map(sectionMapper::toBaseSectionDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<BaseAuthorDto> mapAuthors(List<Author> authors) {
+        return authors.stream()
+                .map(authorMapper::toBaseAuthorDto)
+                .collect(Collectors.toList());
+    }
+
+    public CourseDto convertToDto2(Course course) {
+        if (course == null) {
+            return null;
+        }
+        return CourseDto.builder()
+                .id(course.getId())
+                .title(course.getTitle())
+                .description(course.getDescription())
+                .sections(course.getSections().stream()
+                        .map(section -> SectionDto.builder()
+                                .id(section.getId())
+                                .name(section.getName())
+                                .sectionOrder(section.getSectionOrder())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
 
     /*public void createCourseTest() {
 

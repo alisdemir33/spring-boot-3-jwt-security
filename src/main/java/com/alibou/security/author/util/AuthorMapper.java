@@ -10,20 +10,14 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.stream.Collectors;
 
-@Mapper(uses = {CourseMapper.class})
-public interface AuthorMapper {
-    AuthorMapper INSTANCE = Mappers.getMapper(AuthorMapper.class);
+@Mapper(componentModel = "spring")
+public abstract class AuthorMapper {
+   // AuthorMapper INSTANCE = Mappers.getMapper(AuthorMapper.class);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
     @Mapping(target = "email", source = "email")
-    BaseAuthorDto toBaseAuthorDto(Author author);
-
-//    @Mapping(target = "id", source = "id")
-//    @Mapping(target = "firstName", source = "firstName")
-//    @Mapping(target = "lastName", source = "lastName")
-//    @Mapping(target = "email", source = "email")
-//    @Mapping(target = "courses", expression = "java(author.getCourses().stream().map(courseMapper::toCourseDto).collect(Collectors.toList()))")
-//    AuthorDto toAuthorDto(Author author);
+    @Mapping(target = "age", source = "age")
+    public abstract BaseAuthorDto toBaseAuthorDto(Author author);
 }

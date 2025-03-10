@@ -19,15 +19,15 @@ public class SectionController {
     private final SectionService sectionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseSectionDto> getSectionById(@PathVariable Integer id) {
-        BaseSectionDto sectionDto = sectionService.getSectionById(id);
+    public ResponseEntity<SectionDto> getSectionById(@PathVariable Integer id) {
+        SectionDto sectionDto = sectionService.getSectionById(id);
         return ResponseEntity.ok(sectionDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Section>> getAllSections() {
-        List<Section> sections = sectionService.getAllSections();
-        return ResponseEntity.ok(sections);
+    public ResponseEntity<ResultDto<BaseSectionDto>> getAllSections() {
+        List<BaseSectionDto> list = sectionService.getAllSections();
+        return ResponseEntity.ok(new ResultDto<>((long) list.size(), list));
     }
 
     @GetMapping("/search")
@@ -35,7 +35,6 @@ public class SectionController {
         List<BaseSectionDto> lst = sectionService.searchSections(searchForm);
         return ResponseEntity.ok(new ResultDto<>((long) lst.size(), lst));
     }
-
 
     @PostMapping
     public ResponseEntity<Section> createSection(@RequestBody SectionRequest sectionRequest) {
