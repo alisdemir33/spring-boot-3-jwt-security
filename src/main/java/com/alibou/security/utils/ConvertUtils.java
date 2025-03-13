@@ -29,6 +29,7 @@ public final class ConvertUtils {
     final static public Function<List, ResultDto> listToResponseDtoFunction = list -> {
         ResultDto resultDto = new ResultDto<>();
         resultDto.setResultList(list);
+        resultDto.setCount((long)list.size());
         return resultDto;
     };
 }

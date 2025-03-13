@@ -37,9 +37,10 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Section> createSection(@RequestBody SectionRequest sectionRequest) {
-        Section section = sectionService.createSection(sectionRequest);
-        return ResponseEntity.ok(section);
+    public ResponseEntity<SectionDto> createSection(@RequestBody SectionRequest sectionRequest) {
+        SectionDto sectionDto = sectionService.createSection(sectionRequest);
+
+        return ResponseEntity.ok(sectionDto);
     }
 
     @PutMapping("/{id}")

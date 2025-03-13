@@ -1,5 +1,6 @@
-package com.alibou.security.common;
+package com.alibou.security.utils.exceptionhandler;
 
+import com.alibou.security.exception.BadRequestException;
 import com.alibou.security.utils.exceptionhandler.ErrorResponse;
 import com.alibou.security.utils.exceptionhandler.PreconditionFailedException;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,7 +20,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ErrorResponse> handleNullPointerException(NullPointerException ex) {
-        ErrorResponse errorResponse = new ErrorResponse("NULL_POINTER_EXCEPTION", "A null value was encountered where it is not allowed.");
+        ErrorResponse errorResponse = new ErrorResponse("NULL_POINTER_EXCEPTION",
+                "A null value was encountered where it is not allowed."+ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
@@ -31,7 +33,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred.");
+        ErrorResponse errorResponse = new ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred."+ex.toString());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("BAD_REQUEST", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+
+
+
+
 }

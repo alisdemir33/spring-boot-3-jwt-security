@@ -1,10 +1,13 @@
 package com.alibou.security.lecture;
 
+import com.alibou.security.common.ResultDto;
 import com.alibou.security.lecture.dto.LectureDto;
 import com.alibou.security.lecture.dto.LectureRequest;
 import com.alibou.security.resource.Resource;
 import com.alibou.security.resource.ResourceRepository;
+import com.alibou.security.utils.ConvertUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +21,6 @@ public class LectureController {
     private final LectureService lectureService;
     private final ResourceRepository resourceRepository;
 
-    @PostMapping
-    public ResponseEntity<Lecture> createLecture(@RequestBody LectureRequest lectureRequest) {
-        Lecture createdLecture = lectureService.createLecture(lectureRequest);
-        return ResponseEntity.ok(createdLecture);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<LectureDto> getLectureById(@PathVariable Integer id) {
         LectureDto lecture = lectureService.getLectureById(id);
@@ -31,9 +28,15 @@ public class LectureController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Lecture>> getAllLectures() {
-        List<Lecture> lectures = lectureService.getAllLectures();
-        return ResponseEntity.ok(lectures);
+    public ResponseEntity<ResultDto<LectureDto>> getAllLectures() {
+        ResultDto<LectureDto>  result = lectureService.getAllLectures();
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<LectureDto> createLecture(@RequestBody LectureRequest lectureRequest) {
+        LectureDto createdLecture = lectureService.createLecture(lectureRequest);
+        return ResponseEntity.ok(createdLecture);
     }
 
     @PutMapping("/{id}")

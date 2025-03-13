@@ -1,10 +1,13 @@
 package com.alibou.security.course;
 
+import com.alibou.security.author.dto.BaseAuthorDto;
 import com.alibou.security.common.ResultDto;
 import com.alibou.security.course.dto.CourseDto;
 import com.alibou.security.course.dto.CourseRequest;
 import com.alibou.security.course.dto.CourseSearchFormDto;
 import com.alibou.security.section.Section;
+import com.alibou.security.section.dto.BaseSectionDto;
+import com.alibou.security.section.dto.SectionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +30,9 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseDto>> getAllCourses() {
-        List<CourseDto> courses = courseService.getAllCourses();
-        return ResponseEntity.ok(courses);
+    public ResponseEntity<ResultDto<CourseDto>> getAllCourses() {
+        ResultDto<CourseDto> courses = courseService.getAllCourses();
+        return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
     @PostMapping("/search")
@@ -38,27 +41,28 @@ public class CourseController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
-    @PostMapping("/save")
-    public ResponseEntity<CourseDto> save(@RequestBody CourseRequest request) {
-        CourseDto courseDto = courseService.save(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(courseDto);
-    }
-
     @PostMapping("/create")
     public ResponseEntity<CourseDto> createCourse(@RequestBody CourseRequest courseRequest) {
-        CourseDto courseDto = courseService.createCourse(courseRequest);
+        CourseDto courseDto = courseService.createFullCourse(courseRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(courseDto);
     }
 
     @PostMapping("/{courseId}/sections")
-    public Section addSectionToCourse(@PathVariable Integer courseId, @RequestBody Section section) {
-        return courseService.addSectionToCourse(courseId, section);
+    public ResponseEntity<SectionDto> addSectionToCourse(@PathVariable Integer courseId, @RequestBody SectionDto sectionDto) {
+        SectionDto savedSectionDto =  courseService.addSectionToCourse(courseId, sectionDto);
+        return ResponseEntity.status(HttpStatus.OK).body(savedSectionDto);
     }
 
     @GetMapping("/{courseId}/sections")
-    public List<Section> getCourseSections(@PathVariable Integer courseId) {
-        return courseService.getCourseSections(courseId);
+    public ResponseEntity<ResultDto<BaseSectionDto>> getCourseSections(@PathVariable Integer courseId) {
+        ResultDto<BaseSectionDto> result = courseService.getCourseSections(courseId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/{courseId}/authors")
+    public ResponseEntity<ResultDto<BaseAuthorDto>> getCourseAuthors(@PathVariable Integer courseId) {
+        ResultDto<BaseAuthorDto> result = courseService.getCourseAuthors(courseId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

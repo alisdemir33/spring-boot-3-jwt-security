@@ -37,3 +37,5 @@ public class Section extends BaseEntity {
   @OneToMany(mappedBy = "section")
   private List<Lecture> lectures;
 }
+
+

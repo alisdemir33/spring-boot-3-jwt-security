@@ -17,4 +17,18 @@ public abstract class SectionMapper {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "sectionOrder", source = "sectionOrder")
     public abstract BaseSectionDto toBaseSectionDto(Section section);
+
+
+    public Section toSection(SectionDto sectionDto) {
+        if (sectionDto == null) {
+            return null;
+        }
+        Section section = new Section();
+        section.setId(sectionDto.getId());
+        section.setName(sectionDto.getName());
+        section.setDescription(sectionDto.getDescription());
+        section.setSectionOrder(sectionDto.getSectionOrder());
+        return section;
+    }
 }
+

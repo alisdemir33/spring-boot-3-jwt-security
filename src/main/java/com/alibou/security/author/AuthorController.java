@@ -44,7 +44,7 @@ public class AuthorController {
 
     @PostMapping
     public ResponseEntity<BaseAuthorDto> save(@RequestBody AuthorRequest request) {
-        BaseAuthorDto authorDto = service.save(request);
+        BaseAuthorDto authorDto = service.createAuthor(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(authorDto);
     }
 
