@@ -1,0 +1,14 @@
+package com.alibou.security.course.dto;
+
+import com.alibou.security.section.dto.SectionRequest;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class CourseRequest {
+    private String title;
+    private String description;
+    private List<Integer> authorIds;
+    private List<SectionRequest> sections;
+}

@@ -1,56 +1,31 @@
 package com.alibou.security.book;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+
+import com.alibou.security.author.Author;
+import com.alibou.security.models.BaseEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Book {
-
-    @Id
-    @GeneratedValue
-    private Integer id;
-    private String author;
+@Data
+@SuperBuilder
+@NoArgsConstructor
+public class Book  extends BaseEntity {
     private String isbn;
+    private String title;
+    private String description;
 
-    @CreatedDate
-    @Column(
-            nullable = false,
-            updatable = false
+    @ManyToMany
+    @JoinTable(
+            name = "book_authors",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
     )
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime lastModified;
-
-
-    @CreatedBy
-    @Column(
-            nullable = false,
-            updatable = false
-    )
-    private Integer createdBy;
-
-    @LastModifiedBy
-    @Column(insertable = false)
-    private Integer lastModifiedBy;
+    private Set<Author> authors = new HashSet<>();
 }

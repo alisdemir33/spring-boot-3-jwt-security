@@ -13,14 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
-import static com.alibou.security.user.Permission.ADMIN_CREATE;
-import static com.alibou.security.user.Permission.ADMIN_DELETE;
-import static com.alibou.security.user.Permission.ADMIN_READ;
-import static com.alibou.security.user.Permission.ADMIN_UPDATE;
-import static com.alibou.security.user.Permission.MANAGER_CREATE;
-import static com.alibou.security.user.Permission.MANAGER_DELETE;
-import static com.alibou.security.user.Permission.MANAGER_READ;
-import static com.alibou.security.user.Permission.MANAGER_UPDATE;
+import static com.alibou.security.user.Permission.*;
 import static com.alibou.security.user.Role.ADMIN;
 import static com.alibou.security.user.Role.MANAGER;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -57,11 +50,15 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
+                                // .requestMatchers("/api/v1/management/**").authenticated() // Allow all methods of ManagementController
+                                .requestMatchers(GET,"/api/v1/course/**").hasAuthority("management:read")
+                                .requestMatchers(POST,"/api/v1/course/**").hasAuthority("management:create")
+                                .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority("management:read", "admin:read", "callcenter:read")
+                                .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority("admin:create", "manager:create")
+                                .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority("admin:update", "manager:update")
+                                .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority("admin:delete", "manager:delete")
                                 .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
-                                .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name(), MANAGER_READ.name())
-                                .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(ADMIN_CREATE.name(), MANAGER_CREATE.name())
-                                .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name(), MANAGER_UPDATE.name())
-                                .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name(), MANAGER_DELETE.name())
+                               // .requestMatchers("/api/v1/course/**").hasAnyRole(ADMIN.name(), MANAGER.name())
                                 .anyRequest()
                                 .authenticated()
                 )
